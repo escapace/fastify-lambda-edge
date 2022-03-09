@@ -11,6 +11,6 @@ export const packageJSON = await fse.readJSON(path.join(cwd, 'package.json'))
 export const external = [
   ...Object.keys(packageJSON.dependencies ?? {}),
   ...Object.keys(packageJSON.devDependencies ?? {})
-].filter(value => value !== 'lodash-es')
+].filter((value) => value !== 'lodash-es')
 
 export const target = ['node16']
