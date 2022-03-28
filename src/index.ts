@@ -5,11 +5,15 @@ import type {
   CloudFrontResultResponse,
   Context
 } from 'aws-lambda'
-import type { FastifyInstance, HTTPMethods, LightMyRequestResponse } from 'fastify'
+import type {
+  FastifyInstance,
+  HTTPMethods,
+  LightMyRequestResponse
+} from 'fastify'
 import type { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http'
-import { forEach, sortBy } from 'lodash-es'
+import { forEach, isString, sortBy } from 'lodash-es'
 
-const RESPONSE_HEADERS_DENY_LIST = ['content-length']
+const RESPONSE_HEADERS_DENY_LIST = ['connection', 'content-length', 'date']
 
 interface Options {
   callbackWaitsForEmptyEventLoop: boolean
@@ -129,37 +133,35 @@ export default (
         headers: requestHeaders
       })
 
-      const encodingFromResponse = (
-        response: LightMyRequestResponse,
-        options: Partial<Options>
-      ): CloudFrontResultResponse['bodyEncoding'] => {
-        if (
-          response.body === undefined ||
-          options.binaryMimeTypes === undefined
-        ) {
-          return
-        }
-
-        const contentType =
-          responseHeaders['content-type'] === undefined
-            ? undefined
-            : responseHeaders['content-type'][0].value
-
-        if (contentType === undefined) {
-          return
-        }
-
-        return options.binaryMimeTypes.includes(contentType) ? 'base64' : 'text'
-      }
-
       const responseHeaders = headersFromResponse(response)
-      const responseEncoding = encodingFromResponse(response, options)
+
+      const mimeType =
+        responseHeaders['content-type'] === undefined
+          ? undefined
+          : responseHeaders['content-type'][0].value.split(';')[0]
+
+      let bodyEncoding: CloudFrontResultResponse['bodyEncoding']
+      let body: CloudFrontResultResponse['body']
+
+      if (isString(response.body)) {
+        bodyEncoding =
+          options.binaryMimeTypes === undefined || mimeType === undefined
+            ? 'text'
+            : options.binaryMimeTypes.includes(mimeType)
+            ? 'base64'
+            : 'text'
+
+        body =
+          bodyEncoding === 'text'
+            ? response.body
+            : Buffer.from(response.body).toString('base64')
+      }
 
       return {
         status: `${response.statusCode}`,
         statusDescription: response.statusMessage,
-        body: response.body,
-        bodyEncoding: responseEncoding,
+        body,
+        bodyEncoding,
         headers: responseHeaders
       }
     } catch {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { assert } from 'chai'
 import { fastify } from 'fastify'
 import fastifyLambdaEdge from './index'
@@ -54,6 +53,8 @@ describe('./src/index.spec.ts', () => {
       { key: 'set-cookie', value: 'qwerty=one' },
       { key: 'set-cookie', value: 'qwerty=two' }
     ])
+
+    console.log(response.headers)
 
     assert.deepEqual(response.headers?.['content-type'], [
       { key: 'content-type', value: 'application/json; charset=utf-8' }
