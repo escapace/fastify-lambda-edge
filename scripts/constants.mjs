@@ -13,4 +13,4 @@ export const external = [
   ...Object.keys(packageJSON.devDependencies ?? {})
 ].filter((value) => value !== 'lodash-es')
 
-export const target = ['node16']
+export const target = ['node14']
