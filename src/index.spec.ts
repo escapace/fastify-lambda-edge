@@ -54,8 +54,6 @@ describe('./src/index.spec.ts', () => {
       { key: 'set-cookie', value: 'qwerty=two' }
     ])
 
-    console.log(response.headers)
-
     assert.deepEqual(response.headers?.['content-type'], [
       { key: 'content-type', value: 'application/json; charset=utf-8' }
     ])

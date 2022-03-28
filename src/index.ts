@@ -11,7 +11,7 @@ import type {
   LightMyRequestResponse
 } from 'fastify'
 import type { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http'
-import { forEach, isString, sortBy } from 'lodash-es'
+import { forEach, isString, sortBy, trim } from 'lodash-es'
 
 const RESPONSE_HEADERS_DENY_LIST = ['connection', 'content-length', 'date']
 
@@ -138,7 +138,7 @@ export default (
       const mimeType =
         responseHeaders['content-type'] === undefined
           ? undefined
-          : responseHeaders['content-type'][0].value.split(';')[0]
+          : trim(responseHeaders['content-type'][0].value.split(';')[0])
 
       let bodyEncoding: CloudFrontResultResponse['bodyEncoding']
       let body: CloudFrontResultResponse['body']
