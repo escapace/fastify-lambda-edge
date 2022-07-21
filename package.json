@@ -25,7 +25,7 @@
     "eslint-plugin-no-null": "1.0.2",
     "execa": "6.1.0",
     "fast-glob": "3.2.11",
-    "fastify": "3.29.0",
+    "fastify": "4.3.0",
     "fs-extra": "10.1.0",
     "husky": "7.0.4",
     "is-ci": "3.0.1",
@@ -55,7 +55,7 @@
   "main": "lib/cjs/index.cjs",
   "peerDependencies": {
     "@types/aws-lambda": "^8.10.93",
-    "fastify": "^3.27.4"
+    "fastify": "^3.27.4 || ^4.0.0"
   },
   "private": false,
   "publishConfig": {
